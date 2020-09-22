@@ -1,0 +1,24 @@
+version: '3.3'
+services:
+        server:
+                image: jamesljeffrey1995/server
+                build: ./server
+                env_file: .env
+                deploy:
+                        replicas: 4
+                ports:
+                        - '5000-5003:5000'
+
+        nginx:
+                image: nginx:latest
+                ports:
+                        - target: 80
+                          published: 80
+                          protocol: tcp
+
+                depends_on: 
+                        - server
+                volumes: 
+                        - type: bind
+                          source: ./nginx/nginx.conf
+                          target: /etc/nginx/nginx.conf
