@@ -1,13 +1,19 @@
 import scrapy
 import re
+import time
 
 class QuotesSpider(scrapy.Spider):
     name = "quotes"
-    start_urls = ["https://magicseaweed.com/Tynemouth-Longsands-Surf-Report/26/"]
-
+    global i
+    i = 0
+    url = []
+    global movie_list
+    movie_list = {"Test","Test2"}
+    while i != 1000:
+        url.append("https://reelgood.com/source/netflix?offset="+str(i))
+        i +=50
+    start_urls = url
     def parse(self, response):
-        for quote in response.css('div.table-responsive-xs'):
-            yield {
-                'day': re.sub("<.*?>", "" ,str(quote.css('h6.nomargin.pull-left.heavy.table-header-title').getall())),
-                'size': re.sub("<.*?>", "" ,str(quote.css('span.h3.font-sans-serif.heavy.nomargin.text-white').getall()))
-            }
+        for quote in response.css('table.css-1179hly'):
+            movie_list.add(re.sub("<.*?>", "" ,str(quote.css('td.css-1u7zfla.e126mwsw1').getall())))
+        yield{"movies":movie_list}
